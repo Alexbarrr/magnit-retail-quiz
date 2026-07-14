@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ритейл-квиз · Что скрыто в названии бренда</title>
+<style>
+  :root{
+    --red:#E30613;
+    --red-dark:#B80410;
+    --red-soft:#FDE7E9;
+    --ink:#141414;
+    --muted:#6B7280;
+    --line:#ECEDEF;
+    --surface:#FFFFFF;
+    --bg:#F7F8FA;
+    --green:#0E9F6E;
+    --green-soft:#E6F6EF;
+    --shadow:0 10px 30px rgba(17,17,17,.06), 0 2px 8px rgba(17,17,17,.04);
+    --shadow-lg:0 24px 60px rgba(17,17,17,.10), 0 6px 18px rgba(17,17,17,.06);
+    --r:22px;
+    --r-sm:14px;
+    --font:"Inter","Helvetica Neue","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    line-height:1.5;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* Abstract "М" backdrop */
+  body::before,body::after{
+    content:"";
+    position:fixed;
+    z-index:0;
+    border-radius:50%;
+    filter:blur(10px);
+    opacity:.5;
+    pointer-events:none;
+  }
+  body::before{
+    width:520px;height:520px;
+    right:-160px;top:-180px;
+    background:radial-gradient(circle at 30% 30%, #FFD9DC, transparent 70%);
+  }
+  body::after{
+    width:460px;height:460px;
+    left:-170px;bottom:-160px;
+    background:radial-gradient(circle at 60% 40%, #FFE3E5, transparent 70%);
+  }
+
+  .wrap{
+    position:relative;z-index:1;
+    max-width:760px;
+    margin:0 auto;
+    padding:clamp(16px,4vw,40px);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Brand mark */
+  .brand{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:clamp(18px,4vw,32px);
+  }
+  .mark{
+    width:38px;height:38px;flex:0 0 auto;
+    border-radius:11px;
+    background:var(--red);
+    position:relative;
+    box-shadow:0 6px 16px rgba(227,6,19,.28);
+  }
+  .mark::before{
+    content:"М";
+    position:absolute;inset:0;
+    display:grid;place-items:center;
+    color:#fff;font-weight:800;font-size:22px;
+    font-family:var(--font);
+  }
+  .brand b{font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .brand span{color:var(--muted);font-size:13px;font-weight:500}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    box-shadow:var(--shadow);
+    padding:clamp(22px,4.5vw,40px);
+  }
+
+  .stack{flex:1;display:flex;flex-direction:column;justify-content:center}
+
+  /* Typography */
+  h1{
+    font-size:clamp(28px,6vw,44px);
+    line-height:1.08;
+    letter-spacing:-.02em;
+    margin:0 0 14px;
+    font-weight:800;
+  }
+  h1 .accent{color:var(--red)}
+  .lead{font-size:clamp(15px,2.4vw,18px);color:var(--muted);margin:0 0 26px;max-width:52ch}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--red);
+    background:var(--red-soft);
+    padding:7px 13px;border-radius:100px;
+    margin-bottom:18px;
+  }
+
+  /* Buttons */
+  .btn{
+    appearance:none;border:0;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:16px;
+    padding:16px 26px;border-radius:14px;
+    transition:transform .12s ease, box-shadow .18s ease, background .18s ease;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    text-decoration:none;
+  }
+  .btn-primary{
+    background:var(--red);color:#fff;
+    box-shadow:0 10px 22px rgba(227,6,19,.26);
+  }
+  .btn-primary:hover{background:var(--red-dark);transform:translateY(-1px);box-shadow:0 14px 28px rgba(227,6,19,.3)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:#fff;color:var(--ink);border:1px solid var(--line);
+  }
+  .btn-ghost:hover{border-color:#D6D8DC;background:#FAFAFB}
+  .btn-block{width:100%}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap}
+  .btn:focus-visible{outline:3px solid rgba(227,6,19,.35);outline-offset:2px}
+
+  /* Rules list */
+  .rules{list-style:none;margin:6px 0 28px;padding:0;display:grid;gap:14px}
+  .rules li{display:flex;gap:14px;align-items:flex-start}
+  .rules .num{
+    flex:0 0 auto;width:30px;height:30px;border-radius:10px;
+    background:var(--red-soft);color:var(--red);
+    font-weight:800;font-size:14px;display:grid;place-items:center;
+    margin-top:1px;
+  }
+  .rules b{font-weight:700}
+  .rules p{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+  /* Progress + score header */
+  .hud{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:22px;
+  }
+  .progress{flex:1}
+  .progress .labels{display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px}
+  .bar{height:8px;background:var(--line);border-radius:100px;overflow:hidden}
+  .bar>i{
+    display:block;height:100%;width:0;
+    background:linear-gradient(90deg,var(--red),#FF4757);
+    border-radius:100px;transition:width .45s cubic-bezier(.4,0,.2,1);
+  }
+  .score{
+    flex:0 0 auto;display:flex;align-items:center;gap:8px;
+    background:#fff;border:1px solid var(--line);border-radius:100px;
+    padding:8px 15px;font-weight:700;font-size:14px;
+  }
+  .score b{color:var(--red)}
+  .score svg{width:15px;height:15px}
+
+  /* Question */
+  .q-num{font-size:13px;font-weight:700;color:var(--red);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+  .q-text{font-size:clamp(20px,3.6vw,27px);line-height:1.24;font-weight:750;letter-spacing:-.01em;margin:0 0 22px}
+
+  .options{display:grid;gap:12px}
+  .opt{
+    text-align:left;width:100%;
+    background:#fff;border:1.5px solid var(--line);
+    border-radius:var(--r-sm);
+    padding:16px 18px;
+    font-family:inherit;font-size:15.5px;font-weight:600;color:var(--ink);
+    cursor:pointer;display:flex;align-items:center;gap:14px;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .opt:hover:not(:disabled){border-color:var(--red);background:#FFFBFB}
+  .opt:active:not(:disabled){transform:scale(.995)}
+  .opt:disabled{cursor:default}
+  .opt .key{
+    flex:0 0 auto;width:28px;height:28px;border-radius:8px;
+    background:var(--bg);color:var(--muted);
+    font-weight:800;font-size:13px;display:grid;place-items:center;
+    transition:all .15s;
+  }
+  .opt .txt{flex:1}
+  .opt .tick{flex:0 0 auto;width:22px;height:22px;opacity:0;transition:opacity .2s}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .key{background:var(--green);color:#fff}
+  .opt.correct .tick{opacity:1;color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:#FEF1F2}
+  .opt.wrong .key{background:var(--red);color:#fff}
+  .opt.wrong .tick{opacity:1;color:var(--red)}
+  .opt.dim{opacity:.55}
+
+  /* Feedback panel */
+  .feedback{
+    margin-top:20px;
+    border-radius:var(--r-sm);
+    padding:18px 20px;
+    border:1px solid var(--line);
+    background:var(--bg);
+    display:none;
+    animation:rise .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .feedback.show{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .fb-head{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;margin-bottom:8px}
+  .fb-head.ok{color:var(--green)}
+  .fb-head.no{color:var(--red)}
+  .fb-head svg{width:20px;height:20px}
+  .fb-fact{font-size:14.5px;color:#2b2b2b;margin:0 0 16px}
+  .fb-fact b{color:var(--ink)}
+  .fb-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .proof{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:14px;font-weight:700;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:11px;
+    padding:11px 15px;text-decoration:none;transition:border-color .15s,background .15s;
+  }
+  .proof:hover{border-color:var(--red);color:var(--red);background:#FFFBFB}
+  .proof svg{width:15px;height:15px}
+  .next{margin-left:auto}
+
+  /* Final */
+  .result-ring{
+    width:150px;height:150px;margin:0 auto 8px;position:relative;
+  }
+  .result-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .result-ring .val{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+  }
+  .result-ring .val b{font-size:34px;font-weight:800;line-height:1}
+  .result-ring .val span{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
+  .rank{
+    text-align:center;margin:8px 0 4px;
+  }
+  .rank .title{font-size:clamp(24px,5vw,34px);font-weight:800;letter-spacing:-.02em;margin:0}
+  .rank .sub{color:var(--muted);font-size:15px;margin:8px 0 0}
+  .final-stats{
+    display:flex;gap:12px;justify-content:center;margin:22px 0 26px;flex-wrap:wrap;
+  }
+  .stat{
+    background:var(--bg);border:1px solid var(--line);border-radius:14px;
+    padding:14px 20px;text-align:center;min-width:110px;
+  }
+  .stat b{display:block;font-size:26px;font-weight:800;color:var(--red);line-height:1}
+  .stat span{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:5px;display:block}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;font-size:14px;font-weight:600;
+    padding:13px 20px;border-radius:12px;box-shadow:var(--shadow-lg);
+    opacity:0;pointer-events:none;transition:all .3s;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .foot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:24px}
+
+  .screen{display:none}
+  .screen.active{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  @media (max-width:520px){
+    .next{margin-left:0;width:100%}
+    .fb-actions{flex-direction:column;align-items:stretch}
+    .proof{justify-content:center}
+    .hud{gap:10px}
+    .score{padding:7px 12px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="mark" aria-hidden="true"></div>
+    <div>
+      <b>Ритейл-квиз</b><br>
+      <span>Что на самом деле скрыто в названии бренда</span>
+    </div>
+  </div>
+
+  <div class="stack">
+
+    <!-- ===== START ===== -->
+    <section class="screen active" id="screen-start">
+      <div class="card">
+        <span class="eyebrow">Икебрейкер · 20 вопросов</span>
+        <h1>Проверим, насколько хорошо вы знаете <span class="accent">ритейл-бренды</span></h1>
+        <p class="lead">Иногда в названии бренда уже спрятана его стратегия. Угадайте вместе с коллегами, что на самом деле скрывается за знакомыми вывесками — и узнайте историю каждого имени.</p>
+        <button class="btn btn-primary btn-block" onclick="goRules()">Начать квиз</button>
+      </div>
+    </section>
+
+    <!-- ===== RULES ===== -->
+    <section class="screen" id="screen-rules">
+      <div class="card">
+        <span class="eyebrow">Как это работает</span>
+        <h1>Три простых правила</h1>
+        <ul class="rules">
+          <li>
+            <span class="num">1</span>
+            <div><b>Сначала догадка</b><p>20 вопросов о происхождении названий брендов ритейла. По одному на экран — выбирайте вариант вместе.</p></div>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div><b>Потом — правда</b><p>Сразу после ответа показываем верный вариант, короткое объяснение «почему так» и ссылку на источник.</p></div>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div><b>Это не экзамен</b><p>Цель — не набрать баллы, а удивиться и обсудить. Хотя титул в конце всё-таки будет 😉</p></div>
+          </li>
+        </ul>
+        <div class="btn-row">
+          <button class="btn btn-primary" style="flex:1" onclick="startQuiz()">Поехали</button>
+          <button class="btn btn-ghost" onclick="show('screen-start')">Назад</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== QUESTION ===== -->
+    <section class="screen" id="screen-quiz">
+      <div class="hud">
+        <div class="progress">
+          <div class="labels"><span id="q-progress-label">Вопрос 1 из 20</span><span id="q-progress-pct">5%</span></div>
+          <div class="bar"><i id="q-bar"></i></div>
+        </div>
+        <div class="score" title="Правильных ответов">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 21.4l1.4-6.8L2.2 9.9l6.9-.8z"/></svg>
+          <span><b id="score-val">0</b>/20</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="q-num" id="q-num">Вопрос 1</div>
+        <h2 class="q-text" id="q-text">—</h2>
+        <div class="options" id="q-options"></div>
+
+        <div class="feedback" id="q-feedback">
+          <div class="fb-head" id="fb-head"></div>
+          <p class="fb-fact" id="fb-fact"></p>
+          <div class="fb-actions">
+            <a class="proof" id="fb-proof" href="#" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+              <span id="fb-proof-label">Источник</span>
+            </a>
+            <button class="btn btn-primary next" id="fb-next" onclick="nextQuestion()">Следующий вопрос →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FINAL ===== -->
+    <section class="screen" id="screen-final">
+      <div class="card">
+        <span class="eyebrow" style="display:block;text-align:center;margin:0 auto 18px;width:fit-content">Результат</span>
+        <div class="result-ring">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="12"/>
+            <circle id="ring-fill" cx="60" cy="60" r="52" fill="none" stroke="var(--red)" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"/>
+          </svg>
+          <div class="val"><b id="final-pct">0%</b><span>верных ответов</span></div>
+        </div>
+        <div class="rank">
+          <h1 class="title" id="final-rank">—</h1>
+          <p class="sub" id="final-sub">—</p>
+        </div>
+        <div class="final-stats">
+          <div class="stat"><b id="final-correct">0</b><span>из 20 верных</span></div>
+          <div class="stat"><b id="final-pct2">0%</b><span>точность</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" style="flex:1" onclick="shareResult()">Показать коллегам</button>
+          <button class="btn btn-ghost" onclick="restart()">Сыграть ещё раз</button>
+        </div>
+      </div>
+      <p class="foot">Квиз-икебрейкер про нейминг в ритейле · факты со ссылками на источники</p>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">Результат скопирован — покажите коллегам 👍</div>
+
+<script>
+/* ============ ДАННЫЕ ВОПРОСОВ ============ */
+const QUESTIONS = [
+  {
+    q: "«Магнит» — это не только про физику. Что, по версии самой компании, зашифровано в названии сети?",
+    options: ["Магазин низких тарифов","Магистраль товаров","Максимальный ассортимент и низкие цены","Фамилию основателя"],
+    correct: 0,
+    fact: "На сайте «Магнита» название расшифровывают как «<b>МАГазин НИзких Тарифов</b>» — имя буквально закладывало ценовое позиционирование сети.",
+    proofUrl: "https://www.magnit.com/ru/about-company/history/",
+    proofLabel: "Официальный сайт"
+  },
+  {
+    q: "В каком городе зародилась компания, которая позже развернула сеть «Магнит»?",
+    options: ["Краснодар","Ростов-на-Дону","Екатеринбург","Нижний Новгород"],
+    correct: 0,
+    fact: "Компанию (сегодня это АО «Тандер») основал <b>Сергей Галицкий в Краснодаре</b>. Магнит и сейчас — «южная» по происхождению сеть.",
+    proofUrl: "https://www.magnit.com/ru/about-company/history/",
+    proofLabel: "Официальный сайт"
+  },
+  {
+    q: "Из объединения каких двух сетей в 2006 году выросла группа X5?",
+    options: ["«Пятёрочка» и «Перекрёсток»","«Магнит» и «Лента»","«Дикси» и «Виктория»","«Копейка» и «Авоська»"],
+    correct: 0,
+    fact: "В мае 2006 года «<b>Пятёрочка</b>» и «<b>Перекрёсток</b>» объединились в X5 Retail Group — так родился один из крупнейших ритейлеров страны.",
+    proofUrl: "https://en.wikipedia.org/wiki/X5_Group",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Сеть «ВкусВилл» выросла из другого проекта. Как он назывался?",
+    options: ["«Избёнка»","«Полянка»","«Село родное»","«Домик в деревне»"],
+    correct: 0,
+    fact: "Всё началось с сети молочных киосков «<b>Избёнка</b>» (2009). Магазины «ВкусВилл» стали открываться с 2012 года.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Вкусвилл",
+    proofLabel: "Источник"
+  },
+  {
+    q: "А что скрывается во второй части названия — «Вилл» во «ВкусВилл»?",
+    options: ["Транслит английского village — «село»","Имя основателя Уилл","Сокращение от «вилла»","Просто красивое звукосочетание"],
+    correct: 0,
+    fact: "«Вилл» — это транслит английского <b>village</b>, «село». Вместе получается что-то вроде «вкусной деревни» — образ фермерской свежести.",
+    proofUrl: "https://brandtime.ru/vkusvill_branding/",
+    proofLabel: "Разработчики нейминга"
+  },
+  {
+    q: "В каком городе была основана торговая сеть «Лента»?",
+    options: ["Санкт-Петербург","Москва","Новосибирск","Казань"],
+    correct: 0,
+    fact: "«Лента» родилась в <b>Санкт-Петербурге</b> в 1993 году: Олег Жеребцов открыл первый склад-магазин формата cash & carry.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Лента_(сеть_магазинов)",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Что зашито в название сети магазинов Fix Price?",
+    options: ["Фиксированную цену — товары продаются по единым ценовым уровням","Быструю починку товаров","Фиксированный список из 500 товаров","Фикс-меню как в кафе"],
+    correct: 0,
+    fact: "Fix Price — от англ. «<b>fixed price</b>», фиксированная цена. В первом магазине (2007) все товары стоили одинаково.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Fix_Price_(сеть_магазинов)",
+    proofLabel: "Источник"
+  },
+  {
+    q: "К какому ценовому сегменту относится сеть «Азбука вкуса»?",
+    options: ["Премиальные супермаркеты","Жёсткие дискаунтеры","Оптовые склады","Магазины фиксированных цен"],
+    correct: 0,
+    fact: "«Азбука вкуса» — сеть <b>премиальных супермаркетов</b>, а само имя мягко играет на образе «азов», основ хорошего вкуса.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Азбука_вкуса",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Название маркетплейса Ozon намеренно делали созвучным другому бренду. Какому?",
+    options: ["Amazon","Yahoo","Google","eBay"],
+    correct: 0,
+    fact: "Имя подбирали созвучным <b>Amazon</b>: рассматривали вариант «Azon», а закрепился короткий и звучный Ozon. Запуск — 1998 год, Санкт-Петербург.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Ozon",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Как буквально переводится название Wildberries?",
+    options: ["Дикие ягоды","Дикий Запад","Дикая природа","Ягодная поляна"],
+    correct: 0,
+    fact: "Wildberries — это буквально «<b>дикие ягоды</b>». Маркетплейс основан в 2004 году Татьяной Бакальчук.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Wildberries",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Чем занимается сервис «Самокат»?",
+    options: ["Экспресс-доставкой продуктов из дарксторов","Прокатом самокатов","Доставкой посылок между городами","Сборкой мебели на дом"],
+    correct: 0,
+    fact: "«Самокат» — сервис <b>быстрой доставки продуктов</b> из дарксторов. Запущен в 2018 году, под брендом «Самокат» — с 2019-го. Название — про скорость.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Самокат_(сервис_доставки)",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Что означает слово «лавка» в названии «Яндекс Лавка»?",
+    options: ["Небольшой магазинчик у дома","Скамейку во дворе","Торговую площадь на рынке","Складское помещение"],
+    correct: 0,
+    fact: "«Лавка» — старое русское слово для <b>небольшого магазина</b> у дома; отсюда и вывеска-логотип. Сервис Яндекса запустился в 2019 году.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Яндекс_Лавка",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Откуда взялось название французской сети Auchan («Ашан»)?",
+    options: ["От района Hauts-Champs, где открылся первый магазин","От фамилии основателя Ашан","От французского слова «изобилие»","От названия реки на юге Франции"],
+    correct: 0,
+    fact: "Первый магазин Жерар Мюлье открыл в 1961 году в районе <b>Hauts-Champs</b> в Рубе — на слух «О-Шан». Написание сделали через «A», чтобы бренд шёл первым в справочниках.",
+    proofUrl: "https://en.wikipedia.org/wiki/Auchan",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Название IKEA — это аббревиатура. Что в ней зашифровано?",
+    options: ["Имя основателя, его ферму и родную деревню","Три шведских города-основателя","Ingenious Kitchen And… — про кухни","Международную ассоциацию мебельщиков"],
+    correct: 0,
+    fact: "IKEA = <b>Ingvar Kamprad</b> (основатель) + <b>Elmtaryd</b> (ферма) + <b>Agunnaryd</b> (приход, где он вырос).",
+    proofUrl: "https://www.ikea.com/ph/en/this-is-ikea/about-us/the-ikea-logo-history-and-design-pub55d85f50/",
+    proofLabel: "Официальный сайт"
+  },
+  {
+    q: "Что означает слово Carrefour по-французски?",
+    options: ["Перекрёсток","Ярмарка","Тележка","Изобилие"],
+    correct: 0,
+    fact: "Carrefour — это «<b>перекрёсток</b>». Первый супермаркет сети открылся в 1960 году рядом с оживлённым перекрёстком под Анси.",
+    proofUrl: "https://en.wikipedia.org/wiki/Carrefour",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Из какой страны родом сеть мелкооптовых магазинов METRO Cash & Carry?",
+    options: ["Германия","Франция","Нидерланды","Швеция"],
+    correct: 0,
+    fact: "Первую в <b>Германии</b> сеть формата cash & carry основал Отто Байсхайм в 1964 году. Формат «плати и увози» был рассчитан на бизнес.",
+    proofUrl: "https://en.wikipedia.org/wiki/Otto_Beisheim",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Ёлочка в логотипе SPAR появилась неслучайно. Почему?",
+    options: ["По-нидерландски «spar» — это ель","Основатель любил Рождество","Первый магазин стоял в еловом лесу","Ель символизирует свежесть овощей"],
+    correct: 0,
+    fact: "Нидерландское слово «<b>spar</b>» означает «ель» — отсюда логотип. Само имя выросло из акронима-девиза о совместной выгоде («DESPAR», 1932).",
+    proofUrl: "https://en.wikipedia.org/wiki/Adriaan_van_Well",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Что означает название немецкой сети гипермаркетов Globus?",
+    options: ["Глобус — земной шар","Крупный опт","Круглосуточно","Мировой стандарт"],
+    correct: 0,
+    fact: "Globus — это <b>«глобус», земной шар</b>. Немецкая семейная сеть: торговая династия ведётся с 1828 года, бренд Globus — с 1966-го, а гипермаркеты работают и в России.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Глобус_(сеть_гипермаркетов)",
+    proofLabel: "Источник"
+  },
+  {
+    q: "Что буквально означает слово «перекрёсток» — как в названии сети?",
+    options: ["Пересечение дорог","Перекрёстную скидку","Пересадочную станцию","Оптовый рынок"],
+    correct: 0,
+    fact: "«Перекрёсток» — это <b>пересечение дорог</b>. Забавно, что ровно то же самое значит и французский Carrefour — два ритейлера с одним смыслом в имени.",
+    proofUrl: "https://ru.wikipedia.org/wiki/Перекрёсток_(сеть_магазинов)",
+    proofLabel: "Источник"
+  },
+  {
+    q: "И на десерт: сколько лет было основателю IKEA Ингвару Кампраду, когда он основал компанию?",
+    options: ["17","25","34","42"],
+    correct: 0,
+    fact: "Кампрад основал IKEA в 1943 году, когда ему было всего <b>17 лет</b>. Название он сложил из своих инициалов, фермы Elmtaryd и прихода Agunnaryd.",
+    proofUrl: "https://en.wikipedia.org/wiki/IKEA",
+    proofLabel: "Источник"
+  }
+];
+
+/* ============ РАНГИ ============ */
+const RANKS = [
+  {min:0,  max:7,  title:"Новичок в ритейле", sub:"Отличный старт — теперь за каждой вывеской для вас спрятана история."},
+  {min:8,  max:13, title:"Уверенный покупатель", sub:"Вы чувствуете бренды на интуиции. Ещё чуть-чуть — и рынок как на ладони."},
+  {min:14, max:17, title:"Знает рынок", sub:"Сильный результат: вы видите стратегию там, где другие видят просто название."},
+  {min:18, max:20, title:"Retail brain", sub:"Респект. Нейминг, позиционирование, история брендов — всё при вас."}
+];
+
+/* ============ СОСТОЯНИЕ ============ */
+let idx = 0;
+let score = 0;
+let answered = false;
+const TOTAL = QUESTIONS.length;
+const KEYS = ["А","Б","В","Г"];
+
+/* ============ НАВИГАЦИЯ ЭКРАНОВ ============ */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function goRules(){ show("screen-rules"); }
+function startQuiz(){
+  idx = 0; score = 0;
+  document.getElementById("score-val").textContent = "0";
+  show("screen-quiz");
+  renderQuestion();
+}
+
+/* ============ РЕНДЕР ВОПРОСА ============ */
+function renderQuestion(){
+  answered = false;
+  const item = QUESTIONS[idx];
+
+  // progress
+  const pct = Math.round(((idx) / TOTAL) * 100);
+  document.getElementById("q-progress-label").textContent = `Вопрос ${idx+1} из ${TOTAL}`;
+  document.getElementById("q-progress-pct").textContent = `${Math.round(((idx)/TOTAL)*100)}%`;
+  document.getElementById("q-bar").style.width = `${(idx/TOTAL)*100}%`;
+
+  document.getElementById("q-num").textContent = `Вопрос ${idx+1}`;
+  document.getElementById("q-text").textContent = item.q;
+
+  // shuffle options so the correct one isn't always first
+  const shuffled = item.options
+    .map((text,i)=>({text, isCorrect:i===item.correct}))
+    .map(o=>({o, r:Math.random()}))
+    .sort((a,b)=>a.r-b.r)
+    .map(x=>x.o);
+
+  // options
+  const box = document.getElementById("q-options");
+  box.innerHTML = "";
+  shuffled.forEach((opt,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.innerHTML = `<span class="key">${KEYS[i]}</span><span class="txt">${opt.text}</span>
+      <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+    b.onclick = ()=>selectAnswer(opt.isCorrect,b);
+    box.appendChild(b);
+  });
+
+  // reset feedback
+  document.getElementById("q-feedback").classList.remove("show");
+}
+
+/* ============ ВЫБОР ОТВЕТА ============ */
+function selectAnswer(isRight, btn){
+  if(answered) return;
+  answered = true;
+  const item = QUESTIONS[idx];
+  const opts = [...document.querySelectorAll("#q-options .opt")];
+
+  opts.forEach((o)=>{
+    o.disabled = true;
+    const chosen = o === btn;
+    if(chosen && isRight) o.classList.add("correct");
+    else if(chosen && !isRight) o.classList.add("wrong");
+    else o.classList.add("dim");
+  });
+  // always highlight the correct option (find it, since positions are shuffled)
+  if(!isRight){
+    const correctBtn = opts.find(o=>o.querySelector(".txt").textContent === item.options[item.correct]);
+    if(correctBtn){ correctBtn.classList.remove("dim"); correctBtn.classList.add("correct"); }
+  }
+
+  if(isRight){
+    score++;
+    document.getElementById("score-val").textContent = score;
+  }
+
+  // fill progress fully for current question
+  document.getElementById("q-bar").style.width = `${((idx+1)/TOTAL)*100}%`;
+  document.getElementById("q-progress-pct").textContent = `${Math.round(((idx+1)/TOTAL)*100)}%`;
+
+  // feedback
+  const head = document.getElementById("fb-head");
+  head.className = "fb-head " + (isRight ? "ok" : "no");
+  head.innerHTML = isRight
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> Верно! У бренда действительно был именно такой смысл`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg> Почти. Но история названия оказалась интереснее`;
+
+  document.getElementById("fb-fact").innerHTML = item.fact;
+  const proof = document.getElementById("fb-proof");
+  proof.href = item.proofUrl;
+  document.getElementById("fb-proof-label").textContent = item.proofLabel || "Источник";
+
+  document.getElementById("fb-next").textContent = (idx === TOTAL-1) ? "Показать результат →" : "Следующий вопрос →";
+
+  const fb = document.getElementById("q-feedback");
+  fb.classList.add("show");
+}
+
+/* ============ СЛЕДУЮЩИЙ ============ */
+function nextQuestion(){
+  if(idx < TOTAL-1){
+    idx++;
+    renderQuestion();
+  } else {
+    showFinal();
+  }
+}
+
+/* ============ ФИНАЛ ============ */
+function showFinal(){
+  const pct = Math.round((score/TOTAL)*100);
+  const rank = RANKS.find(r=>score>=r.min && score<=r.max) || RANKS[0];
+
+  document.getElementById("final-rank").textContent = rank.title;
+  document.getElementById("final-sub").textContent = rank.sub;
+  document.getElementById("final-correct").textContent = score;
+  document.getElementById("final-pct").textContent = `${pct}%`;
+  document.getElementById("final-pct2").textContent = `${pct}%`;
+
+  show("screen-final");
+
+  // animate ring
+  const C = 2 * Math.PI * 52;
+  const ring = document.getElementById("ring-fill");
+  ring.style.strokeDasharray = C;
+  ring.style.strokeDashoffset = C;
+  setTimeout(()=>{ ring.style.strokeDashoffset = C * (1 - pct/100); }, 120);
+}
+
+/* ============ ПОДЕЛИТЬСЯ ============ */
+function shareResult(){
+  const pct = Math.round((score/TOTAL)*100);
+  const rank = RANKS.find(r=>score>=r.min && score<=r.max) || RANKS[0];
+  const text = `Ритейл-квиз: я угадал ${score} из ${TOTAL} названий брендов (${pct}%). Мой титул — «${rank.title}». А вы сколько наберёте?`;
+
+  if(navigator.share){
+    navigator.share({title:"Ритейл-квиз", text:text}).catch(()=>copyText(text));
+  } else {
+    copyText(text);
+  }
+}
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showToast).catch(showToast);
+  } else {
+    showToast();
+  }
+}
+function showToast(){
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2600);
+}
+
+/* ============ РЕСТАРТ ============ */
+function restart(){ show("screen-start"); }
+
+/* ============ КЛАВИАТУРА ============ */
+document.addEventListener("keydown",(e)=>{
+  const quizActive = document.getElementById("screen-quiz").classList.contains("active");
+  if(!quizActive) return;
+  if(!answered && ["1","2","3","4"].includes(e.key)){
+    const opts = document.querySelectorAll("#q-options .opt");
+    const i = parseInt(e.key,10)-1;
+    if(opts[i]) opts[i].click();
+  } else if(answered && (e.key==="Enter" || e.key===" ")){
+    e.preventDefault();
+    nextQuestion();
+  }
+});
+</script>
+</body>
+</html>
